@@ -13,6 +13,7 @@ module.exports = (sequelize, Sequelize) => {
   );
   User.associate = (models) => {
     User.belongsToMany(models.Role, { through: "user_roles" });
+    User.belongsTo(models.Address);
   };
 
   return User;
