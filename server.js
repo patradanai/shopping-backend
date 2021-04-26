@@ -14,7 +14,7 @@ app.use(cors());
 
 // Run Server
 db.sequelize
-  .sync({ force: true })
+  .sync()
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server RUNNING ON PORT : ${PORT}`);
