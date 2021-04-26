@@ -1,15 +1,23 @@
-import express, { json, urlencoded } from "express";
-import cors from "cors";
+const express = require("express");
+const db = require("./src/models");
+const cors = require("cors");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(json());
-app.use(urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 // Routes
 
-app.listen(PORT, () => {
-  console.log(`Server RUNNING ON PORT : ${PORT}`);
-});
+// Run Server
+db.sequelize
+  .sync()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server RUNNING ON PORT : ${PORT}`);
+    });
+  })
+  .catch((err) => console.log(err));
