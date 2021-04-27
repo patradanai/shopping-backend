@@ -62,7 +62,11 @@ exports.signUp = async (req, res) => {
       fname: fname,
       lname: lname,
     });
+    // Create Shop
+    await userSaved.createShop({ name: fname });
 
+    // Create Address
+    await userSaved.createAddress();
     // Set Default Role
     const role = await Role.findOne({ where: { role: "Administrator" } });
 

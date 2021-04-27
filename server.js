@@ -1,7 +1,7 @@
 const express = require("express");
 const db = require("./src/models");
 const cors = require("cors");
-const isForceDb = false;
+const isForceDb = true;
 const AuthRoutes = require("./src/routes/Auth.routes");
 
 const app = express();
@@ -25,11 +25,11 @@ db.sequelize
   })
   .then(() => {
     // Init Database
-    // db.Role.bulkCreate([
-    //   { role: "Administrator" },
-    //   { role: "Staff" },
-    //   { role: "Customer" },
-    //   { role: "Moderator" },
-    // ]);
+    db.Role.bulkCreate([
+      { role: "Administrator" },
+      { role: "Staff" },
+      { role: "Customer" },
+      { role: "Moderator" },
+    ]);
   })
   .catch((err) => console.log(err));
