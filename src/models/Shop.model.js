@@ -3,6 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "Shop",
     {
       name: Sequelize.STRING,
+      isActive: Sequelize.BOOLEAN,
     },
     {}
   );

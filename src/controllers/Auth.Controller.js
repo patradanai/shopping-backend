@@ -63,7 +63,7 @@ exports.signUp = async (req, res) => {
       lname: lname,
     });
     // Create Shop
-    await userSaved.createShop({ name: fname });
+    await userSaved.createShop({ name: fname + "'s Shop", isActive: true });
 
     // Create Address
     await userSaved.createAddress();
