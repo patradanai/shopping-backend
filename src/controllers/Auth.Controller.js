@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const User = db.User;
 const Role = db.Role;
+const Shop = db.Shop;
 
 exports.signIn = async (req, res) => {
   const { username, password } = req.body;
@@ -63,7 +64,11 @@ exports.signUp = async (req, res) => {
       lname: lname,
     });
     // Create Shop
-    await userSaved.createShop({ name: fname + "'s Shop", isActive: true });
+    await userSaved.createShop({
+      name: fname + "'s Shop",
+      isActive: true,
+      ownerId: userSaved.id,
+    });
 
     // Create Address
     await userSaved.createAddress();
@@ -77,4 +82,64 @@ exports.signUp = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
+};
+
+exports.signUpCustomer = async (req, res) => {
+  const { id } = req.params;
+  const { email, fname, lname, password } = req.body;
+  const userId = req.userId; // Owner Id
+
+  try {
+    // Check Existing in Database
+    const user = await User.findOne({ where: { username: email } });
+    if (user) {
+      return res.status(422).json({ Error: "User existing" });
+    }
+
+    // Hashing and Create in DB
+    const hashedPw = await bcrypt.hashSync(password.toString(), 10);
+
+    // Create in Db
+    const userSaved = await User.create({
+      username: email,
+      password: hashedPw,
+      email: email,
+      fname: fname,
+      lname: lname,
+    });
+    // Set Shop Owner
+    const ShopInstace = await Shop.findOne({ where: { ownerId: userId } });
+
+    await userSaved.setShop(ShopInstace);
+
+    // Create Address
+    await userSaved.createAddress();
+    // Set Default Role
+    const role = await Role.findOne({ where: { role: "Staff" } });
+
+    // Save Role
+    await userSaved.setRoles(role);
+
+    return res.status(200).json({ message: "Register Complete" });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
+
+exports.profileUser = async (req, res) => {
+  const userId = req.userId;
+
+  const userInstance = await User.findByPk(userId, {
+    attributes: ["email", "fname", "lname", "phone"],
+    include: [
+      { model: Shop, attributes: ["id", "name", "isActive"] },
+      {
+        model: Role,
+        attributes: ["role"],
+        through: { attributes: [] },
+      },
+    ],
+  });
+
+  return res.status(200).json(userInstance);
 };

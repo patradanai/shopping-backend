@@ -4,6 +4,7 @@ module.exports = (sequelize, Sequelize) => {
     {
       name: Sequelize.STRING,
       isActive: Sequelize.BOOLEAN,
+      ownerId: Sequelize.INTEGER,
     },
     {}
   );
