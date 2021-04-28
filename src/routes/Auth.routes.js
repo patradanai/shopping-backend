@@ -4,8 +4,10 @@ const {
   signIn,
   signUp,
   signUpCustomer,
+  signUpModerator,
   profileUser,
   updateProfile,
+  memberShop,
 } = require("../controllers/Auth.controller");
 const { isAuth } = require("../middlewares/Auth.middleware.js");
 const { isRole } = require("../middlewares/Role.middleware");
@@ -16,12 +18,18 @@ Router.post("/signin", signIn);
 // POST / signup
 Router.post("/signup", signUp);
 
+// Post
+Router.post("/signup/customer", signUpCustomer);
+
 // Post /signup/:id/customer
 Router.post(
-  "/signup/customer",
+  "/signup/moderator",
   [isAuth, isRole("Administrator")],
-  signUpCustomer
+  signUpModerator
 );
+
+// Get member
+Router.get("/user/:id/all", [isAuth, isRole("Administrator")], memberShop);
 
 // Get /profile
 Router.get("/profile", isAuth, profileUser);

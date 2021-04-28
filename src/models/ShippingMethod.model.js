@@ -10,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
     ShippingMethod.belongsTo(models.Shop);
 
     ShippingMethod.hasMany(models.Order);
+    ShippingMethod.hasMany(models.Cart);
   };
 
   return ShippingMethod;

@@ -6,6 +6,12 @@ const Role = db.Role;
 const Shop = db.Shop;
 const Address = db.Address;
 
+/**
+ * Shop Signin & Customer & Staff Signin
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 exports.signIn = async (req, res) => {
   const { username, password } = req.body;
 
@@ -42,6 +48,13 @@ exports.signIn = async (req, res) => {
     return res.status(500).json({ Error: err.message });
   }
 };
+
+/**
+ * Shop Regsiter
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 
 exports.signUp = async (req, res) => {
   const { email, fname, lname, password } = req.body;
@@ -90,6 +103,12 @@ exports.signUp = async (req, res) => {
   }
 };
 
+/**
+ * Customer Regsiter
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 exports.signUpCustomer = async (req, res) => {
   const { email, fname, lname, password } = req.body;
   const userId = req.userId; // Owner Id
@@ -113,8 +132,58 @@ exports.signUpCustomer = async (req, res) => {
       lname: lname,
       isActive: true,
     });
+
+    // Create Address
+    await userSaved.createAddress();
+
+    // Create Cart
+    await userSaved.createCart();
+
+    // Set Default Role
+    const role = await Role.findOne({ where: { role: "Customer" } });
+
+    // Save Role
+    await userSaved.setRoles(role);
+
+    return res.status(200).json({ message: "Register Complete" });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
+
+/**
+ * Moderator Regsiter
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+exports.signUpModerator = async (req, res) => {
+  const { email, fname, lname, password } = req.body;
+  const userId = req.userId; // Owner Id
+
+  try {
+    // Check Existing in Database
+    const user = await User.findOne({ where: { username: email } });
+    if (user) {
+      return res.status(422).json({ Error: "User existing" });
+    }
+
+    // Hashing and Create in DB
+    const hashedPw = await bcrypt.hashSync(password.toString(), 10);
+
+    // Create in Db
+    const userSaved = await User.create({
+      username: email,
+      password: hashedPw,
+      email: email,
+      fname: fname,
+      lname: lname,
+      isActive: true,
+    });
+    const userInstanace = await User.findByPk(userId);
+
     // Set Shop Owner
-    const ShopInstace = await Shop.findOne({ where: { ownerId: userId } });
+    const ShopInstace = await userInstanace.getShop();
 
     await userSaved.setShop(ShopInstace);
 
@@ -136,6 +205,12 @@ exports.signUpCustomer = async (req, res) => {
   }
 };
 
+/**
+ * Profile User Regsiter
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 exports.profileUser = async (req, res) => {
   const userId = req.userId;
 
@@ -158,6 +233,12 @@ exports.profileUser = async (req, res) => {
   }
 };
 
+/**
+ * update Profile User Regsiter
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
 exports.updateProfile = async (req, res) => {
   const userId = req.userId;
   const { address, postcode, country } = req.body;
@@ -182,6 +263,33 @@ exports.updateProfile = async (req, res) => {
     return res
       .status(200)
       .json({ message: `Completed Update Address Id :${id}` });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
+
+/**
+ * Get member Regsiter
+ * @param {*} req
+ * @param {*} res
+ * @returns
+ */
+exports.memberShop = async (req, res) => {
+  const userId = req.userId;
+
+  try {
+    // get UserInstance
+    const userInstance = await User.findByPk(userId);
+
+    const shopInstance = await Shop.findByPk(userInstance.ShopId);
+
+    const allMemberShop = await shopInstance.getUsers({
+      attributes: {
+        exclude: ["username", "password", "createdAt", "updatedAt"],
+      },
+    });
+
+    return res.status(200).json(allMemberShop);
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
