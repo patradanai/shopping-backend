@@ -25,4 +25,6 @@ Router.post(
 // Get /profile
 Router.get("/profile", isAuth, profileUser);
 
+// Put Update Profile
+
 module.exports = Router;

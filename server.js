@@ -4,6 +4,7 @@ const cors = require("cors");
 const isForceDb = false;
 const AuthRoutes = require("./src/routes/Auth.routes");
 const ShopRoutes = require("./src/routes/Shop.routes");
+const ProductRoutes = require("./src/routes/Product.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,8 @@ app.use(cors());
 app.use("/auth", AuthRoutes);
 
 app.use("/db_shop", ShopRoutes);
+
+app.use("/db_product", ProductRoutes);
 
 // Run Server
 db.sequelize
