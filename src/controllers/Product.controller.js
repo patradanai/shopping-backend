@@ -20,16 +20,27 @@ exports.createProduct = async (req, res) => {
         .json({ Error: `Unthorization with Shop ID :${id}` });
     }
 
-    // Create Product
-    const productInstance = await Product.create({
+    const productInstance = await shopId.createProduct({
       name: name,
       price: price,
       isActive: isActive,
       imageSrc: imageSrc,
+      UserId: userInstance.id,
     });
-    // Update userId and shopId
-    await productInstance.setUser(userInstance);
-    await productInstance.setShop([shopId.id]);
+    if (!productInstance) {
+      return res.status(403).json({ Error: "Create product failure" });
+    }
+
+    // // Create Product
+    // const productInstance = await Product.create({
+    //   name: name,
+    //   price: price,
+    //   isActive: isActive,
+    //   imageSrc: imageSrc,
+    // });
+    // // Update userId and shopId
+    // await productInstance.setUser(userInstance);
+    // await productInstance.setShop([shopId.id]);
 
     return res.status(200).json({ message: "Create Product Completed" });
   } catch (err) {
@@ -48,23 +59,17 @@ exports.updateProduct = async (req, res) => {
     const shopId = await userInstance.getShop();
 
     // Get instance Product
-    const ProductInstance = await Product.findByPk(id);
-    if (!ProductInstance) {
+    const ProductInstance = await shopId.getProducts({ where: { id: id } });
+    if (!ProductInstance.length > 0) {
       return res.status(404).json({ Error: `Product Id : ${id} not found ` });
     }
 
-    if (ProductInstance.ShopId != shopId.id) {
-      return res
-        .status(401)
-        .json({ Error: `Unthorization for SHOP ID ${shopId.id}` });
-    }
+    ProductInstance[0].name = name;
+    ProductInstance[0].price = price;
+    ProductInstance[0].isActive = isActive;
+    ProductInstance[0].imageSrc = imageSrc;
 
-    ProductInstance.name = name;
-    ProductInstance.price = price;
-    ProductInstance.isActive = isActive;
-    ProductInstance.imageSrc = imageSrc;
-
-    await ProductInstance.save();
+    await ProductInstance[0].save();
 
     return res.status(200).json({ message: "Completed Update Product " });
   } catch (err) {
@@ -82,18 +87,12 @@ exports.deleteProduct = async (req, res) => {
     const shopId = await userInstance.getShop();
 
     // Get Instance Product
-    const productInstance = await Product.findByPk(id);
-    if (!ProductInstance) {
+    const productInstance = await shopId.getProducts({ where: { id: id } });
+    if (!productInstance.length > 0) {
       return res.status(404).json({ Error: `Product Id : ${id} not found ` });
     }
 
-    if (productInstance.ShopId != shopId.id) {
-      return res
-        .status(401)
-        .json({ Error: `Unthorization for SHOP ID ${shopId}` });
-    }
-
-    await productInstance.destroy();
+    await productInstance[0].destroy();
     return res.status(200).json({ message: "Completed Delete Product" });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
