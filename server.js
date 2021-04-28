@@ -3,12 +3,14 @@ const path = require("path");
 const db = require("./src/models");
 const cors = require("cors");
 const isForceDb = false;
+
 const AuthRoutes = require("./src/routes/Auth.routes");
 const ShopRoutes = require("./src/routes/Shop.routes");
 const ProductRoutes = require("./src/routes/Product.routes");
 const CategoryRoutes = require("./src/routes/Category.routes");
 const CartRoutes = require("./src/routes/Cart.routes");
 const OrderRoutes = require("./src/routes/Order.routes");
+const ImageRoutes = require("./src/routes/Image.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,6 +32,8 @@ app.use("/db_category", CategoryRoutes);
 app.use("/db_cart", CartRoutes);
 
 app.use("/db_order", OrderRoutes);
+
+app.use("/db_image", ImageRoutes);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 

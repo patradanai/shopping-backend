@@ -1,7 +1,9 @@
 const express = require("express");
+const path = require("path");
 const { isAuth } = require("../middlewares/Auth.middleware");
 const Router = express();
 const multer = require("multer");
+var _ = require("lodash");
 
 const limits = {
   files: 1, // allow only 1 file per request
@@ -27,31 +29,29 @@ const fileFilter = (req, file, cb) => {
 
 var storageProfile = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, __dirname + "images/profiles");
+    cb(null, "images/profiles");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname + "-" + Date.now());
+    cb(null, file.fieldname + "-" + Date.now());
   },
 });
 
 var storageProduct = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, __dirname + "images/products");
+    cb(null, "images/products");
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname + "-" + Date.now());
+    cb(null, file.fieldname + "-" + Date.now());
   },
 });
 
 const configProfile = multer({
   storage: storageProfile,
-  limits: limits,
   fileFilter: fileFilter,
 });
 
 const configProduct = multer({
   storage: storageProduct,
-  limits: limits,
   fileFilter: fileFilter,
 });
 
@@ -92,8 +92,9 @@ const uploadProduct = (req, res, next) => {
 };
 
 // POST /footage/profile
-Router.post("/footage/profile", [isAuth, uploadProfile], (req, res) => {
+Router.post("/footage/profile", [uploadProfile], (req, res) => {
   const file = req.file.filename;
+  const port = 4000;
   const base = req.protocol + "://" + req.hostname + (port ? ":" + port : "");
 
   const profileUrl = base + "/images/profiles/" + file;
@@ -104,6 +105,7 @@ Router.post("/footage/profile", [isAuth, uploadProfile], (req, res) => {
 // POST /footage/product
 Router.post("/footage/product", [isAuth, uploadProduct], (req, res) => {
   const file = req.file.filename;
+  const port = 4000;
   const base = req.protocol + "://" + req.hostname + (port ? ":" + port : "");
 
   const productUrl = base + "/images/products/" + file;
