@@ -11,7 +11,9 @@ exports.getCart = async (req, res) => {
     const userInstance = await User.findByPk(userId);
 
     // Get Cart
-    const cartInstance = await userInstance.getCart();
+    const cartInstance = await userInstance.getCart({
+      include: "Products",
+    });
 
     return res.status(200).json({ data: cartInstance });
   } catch (err) {
@@ -47,7 +49,10 @@ exports.addCart = async (req, res) => {
     });
 
     const allProduct = await cartInstance.getProducts();
-    console.log(subTotal(allProduct));
+
+    // Update subtotal
+    cartInstance.subTotal = subTotal(allProduct);
+    await cartInstance.save();
 
     return res.status(200).json({ message: "Completed Add Product to Cart" });
   } catch (err) {
@@ -69,6 +74,12 @@ exports.deleteProductCart = async (req, res) => {
     const cartProduct = await cartInstance.getProducts({ where: { id: id } });
 
     await cartProduct.destroy();
+
+    const allProduct = await cartInstance.getProducts();
+
+    // Update subtotal
+    cartInstance.subTotal = subTotal(allProduct);
+    await cartInstance.save();
 
     return res
       .status(200)
