@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const db = require("./src/models");
 const cors = require("cors");
 const isForceDb = false;
@@ -29,6 +30,8 @@ app.use("/db_category", CategoryRoutes);
 app.use("/db_cart", CartRoutes);
 
 app.use("/db_order", OrderRoutes);
+
+app.use("/images", express.static(path.join(__dirname, "images")));
 
 // Run Server
 db.sequelize
