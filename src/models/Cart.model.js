@@ -2,7 +2,7 @@ module.exports = (sequelize, Sequelize) => {
   const Cart = sequelize.define(
     "Cart",
     {
-      CartStatus: Sequelize.STRING,
+      subTotal: Sequelize.FLOAT,
     },
     {}
   );

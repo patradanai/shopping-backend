@@ -8,11 +8,13 @@ module.exports = (sequelize, Sequelize) => {
       lname: Sequelize.STRING,
       password: Sequelize.STRING,
       phone: Sequelize.STRING,
+      isActive: Sequelize.BOOLEAN,
     },
     {}
   );
   User.associate = (models) => {
     User.belongsTo(models.Shop);
+    User.hasMany(models.Log);
     User.hasMany(models.Order);
     User.hasMany(models.Transaction);
     User.hasMany(models.Product);
