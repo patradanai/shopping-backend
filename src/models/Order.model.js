@@ -4,6 +4,7 @@ module.exports = (sequelize, Sequelize) => {
     {
       orderStatus: Sequelize.STRING,
       subTotal: Sequelize.FLOAT,
+      grandTotal: Sequelize.FLOAT,
     },
     {}
   );

@@ -1,4 +1,5 @@
 const db = require("../models");
+const { subTotal } = require("../utils/__helper__");
 const User = db.User;
 const Product = db.Product;
 
@@ -44,6 +45,9 @@ exports.addCart = async (req, res) => {
     await cartInstance.addProducts(ProductInstance, {
       through: { quantity: quantity },
     });
+
+    const allProduct = await cartInstance.getProducts();
+    console.log(subTotal(allProduct));
 
     return res.status(200).json({ message: "Completed Add Product to Cart" });
   } catch (err) {

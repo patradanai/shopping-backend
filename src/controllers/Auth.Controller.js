@@ -5,6 +5,7 @@ const User = db.User;
 const Role = db.Role;
 const Shop = db.Shop;
 const Address = db.Address;
+
 exports.signIn = async (req, res) => {
   const { username, password } = req.body;
 
@@ -90,7 +91,6 @@ exports.signUp = async (req, res) => {
 };
 
 exports.signUpCustomer = async (req, res) => {
-  const { id } = req.params;
   const { email, fname, lname, password } = req.body;
   const userId = req.userId; // Owner Id
 

@@ -9,7 +9,7 @@ const Category = db.Category;
 exports.createProduct = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  const { name, price, isActive, imageSrc, categoryId } = req.body;
+  const { name, price, isActive, imageSrc, description, categoryId } = req.body;
 
   try {
     // Check User
@@ -29,6 +29,7 @@ exports.createProduct = async (req, res) => {
       price: price,
       isActive: isActive,
       imageSrc: imageSrc,
+      description: description,
       UserId: userInstance.id,
       CategoryId: categoryInstance.id,
     });
@@ -56,7 +57,7 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  const { name, price, isActive, imageSrc, categoryId } = req.body;
+  const { name, price, isActive, imageSrc, description, categoryId } = req.body;
 
   try {
     // getShopid from User
@@ -74,6 +75,7 @@ exports.updateProduct = async (req, res) => {
 
     ProductInstance[0].name = name;
     ProductInstance[0].price = price;
+    ProductInstance[0].description = description;
     ProductInstance[0].isActive = isActive;
     ProductInstance[0].imageSrc = imageSrc;
     ProductInstance[0].CategoryId = categoryInstance.id;
