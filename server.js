@@ -5,6 +5,7 @@ const isForceDb = false;
 const AuthRoutes = require("./src/routes/Auth.routes");
 const ShopRoutes = require("./src/routes/Shop.routes");
 const ProductRoutes = require("./src/routes/Product.routes");
+const CategoryRoutes = require("./src/routes/Category.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,6 +21,8 @@ app.use("/auth", AuthRoutes);
 app.use("/db_shop", ShopRoutes);
 
 app.use("/db_product", ProductRoutes);
+
+app.use("/db_category", CategoryRoutes);
 
 // Run Server
 db.sequelize
@@ -48,6 +51,29 @@ db.sequelize
     //   { name: "Cod" },
     //   { name: "Credit Card" },
     //   { name: "Paypal" },
+    // ]);
+    // db.Category.bulkCreate([
+    //   { name: "All Departments" },
+    //   { name: "Arts & Crafts" },
+    //   { name: "Automotive" },
+    //   { name: "Baby" },
+    //   { name: "Beauty & Personal Care" },
+    //   { name: "Book" },
+    //   { name: "Computers" },
+    //   { name: "Electronics" },
+    //   { name: "Woman's Fashion" },
+    //   { name: "Men's Fashion" },
+    //   { name: "Gril's Fashion" },
+    //   { name: "Boy's Fashion" },
+    //   { name: "Health & HouseHold" },
+    //   { name: "Home & Kitchen" },
+    //   { name: "Industrial & Scienfics" },
+    //   { name: "Luggage" },
+    //   { name: "Pet Suppliers" },
+    //   { name: "Software & Hardware" },
+    //   { name: "Sport & Outdoor" },
+    //   { name: "Tool & Home Improvement" },
+    //   { name: "Toy & Games" },
     // ]);
   })
   .catch((err) => console.log(err));
