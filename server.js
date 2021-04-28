@@ -6,6 +6,7 @@ const AuthRoutes = require("./src/routes/Auth.routes");
 const ShopRoutes = require("./src/routes/Shop.routes");
 const ProductRoutes = require("./src/routes/Product.routes");
 const CategoryRoutes = require("./src/routes/Category.routes");
+const CartRoutes = require("./src/routes/Cart.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,6 +24,8 @@ app.use("/db_shop", ShopRoutes);
 app.use("/db_product", ProductRoutes);
 
 app.use("/db_category", CategoryRoutes);
+
+app.use("/db_cart", CartRoutes);
 
 // Run Server
 db.sequelize
