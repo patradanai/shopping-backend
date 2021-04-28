@@ -18,7 +18,7 @@ Router.post("/signup", signUp);
 
 // Post /signup/:id/customer
 Router.post(
-  "/signup/:id/customer",
+  "/signup/customer",
   [isAuth, isRole("Administrator")],
   signUpCustomer
 );

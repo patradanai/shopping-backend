@@ -2,13 +2,14 @@ const Sequelize = require("sequelize");
 const db = require("../models");
 const User = db.User;
 const Product = db.Product;
+const Category = db.Category;
 
 // create, update, delete by admin or staff shop
 
 exports.createProduct = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  const { name, price, isActive, imageSrc } = req.body;
+  const { name, price, isActive, imageSrc, categoryId } = req.body;
 
   try {
     // Check User
@@ -20,12 +21,16 @@ exports.createProduct = async (req, res) => {
         .json({ Error: `Unthorization with Shop ID :${id}` });
     }
 
+    // Category Instanace
+    const categoryInstance = await Category.findByPk(categoryId);
+
     const productInstance = await shopId.createProduct({
       name: name,
       price: price,
       isActive: isActive,
       imageSrc: imageSrc,
       UserId: userInstance.id,
+      CategoryId: categoryInstance.id,
     });
     if (!productInstance) {
       return res.status(403).json({ Error: "Create product failure" });
@@ -51,12 +56,15 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
   const userId = req.userId;
-  const { name, price, isActive, imageSrc } = req.body;
+  const { name, price, isActive, imageSrc, categoryId } = req.body;
 
   try {
     // getShopid from User
     const userInstance = await User.findByPk(userId);
     const shopId = await userInstance.getShop();
+
+    // Category Instanace
+    const categoryInstance = await Category.findByPk(categoryId);
 
     // Get instance Product
     const ProductInstance = await shopId.getProducts({ where: { id: id } });
@@ -68,6 +76,7 @@ exports.updateProduct = async (req, res) => {
     ProductInstance[0].price = price;
     ProductInstance[0].isActive = isActive;
     ProductInstance[0].imageSrc = imageSrc;
+    ProductInstance[0].CategoryId = categoryInstance.id;
 
     await ProductInstance[0].save();
 

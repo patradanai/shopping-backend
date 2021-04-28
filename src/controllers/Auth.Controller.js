@@ -62,6 +62,7 @@ exports.signUp = async (req, res) => {
       email: email,
       fname: fname,
       lname: lname,
+      isActive: true,
     });
     // Create Shop
     await userSaved.createShop({
@@ -110,6 +111,7 @@ exports.signUpCustomer = async (req, res) => {
       email: email,
       fname: fname,
       lname: lname,
+      isActive: true,
     });
     // Set Shop Owner
     const ShopInstace = await Shop.findOne({ where: { ownerId: userId } });

@@ -4,7 +4,7 @@ module.exports = (sequelize, Sequelize) => {
     {
       name: Sequelize.STRING,
       price: Sequelize.INTEGER,
-      // description: Sequelize.TEXT,
+      description: Sequelize.TEXT,
       isActive: Sequelize.BOOLEAN,
       imageSrc: Sequelize.STRING,
     },
