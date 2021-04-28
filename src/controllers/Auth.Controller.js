@@ -72,6 +72,10 @@ exports.signUp = async (req, res) => {
 
     // Create Address
     await userSaved.createAddress();
+
+    // Create Cart
+    await userSaved.createCart();
+
     // Set Default Role
     const role = await Role.findOne({ where: { role: "Administrator" } });
 
@@ -114,6 +118,10 @@ exports.signUpCustomer = async (req, res) => {
 
     // Create Address
     await userSaved.createAddress();
+
+    // Create Cart
+    await userSaved.createCart();
+
     // Set Default Role
     const role = await Role.findOne({ where: { role: "Staff" } });
 
