@@ -5,6 +5,7 @@ const {
   signUp,
   signUpCustomer,
   profileUser,
+  updateProfile,
 } = require("../controllers/Auth.controller");
 const { isAuth } = require("../middlewares/Auth.middleware.js");
 const { isRole } = require("../middlewares/Role.middleware");
@@ -26,5 +27,6 @@ Router.post(
 Router.get("/profile", isAuth, profileUser);
 
 // Put Update Profile
+Router.put("/profile/edit", isAuth, updateProfile);
 
 module.exports = Router;

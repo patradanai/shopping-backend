@@ -101,6 +101,7 @@ exports.deleteProduct = async (req, res) => {
 };
 
 // Read by customer
+
 exports.products = async (req, res) => {
   try {
     // Easy Logic Rnd Show
@@ -134,6 +135,7 @@ exports.product = async (req, res) => {
 };
 
 // Read by shop
+
 exports.shopProducts = async (req, res) => {
   const { shopId } = req.params;
 

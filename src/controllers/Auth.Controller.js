@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const User = db.User;
 const Role = db.Role;
 const Shop = db.Shop;
-
+const Address = db.Address;
 exports.signIn = async (req, res) => {
   const { username, password } = req.body;
 
@@ -129,17 +129,50 @@ exports.signUpCustomer = async (req, res) => {
 exports.profileUser = async (req, res) => {
   const userId = req.userId;
 
-  const userInstance = await User.findByPk(userId, {
-    attributes: ["email", "fname", "lname", "phone"],
-    include: [
-      { model: Shop, attributes: ["id", "name", "isActive"] },
-      {
-        model: Role,
-        attributes: ["role"],
-        through: { attributes: [] },
-      },
-    ],
-  });
+  try {
+    const userInstance = await User.findByPk(userId, {
+      attributes: ["email", "fname", "lname", "phone"],
+      include: [
+        { model: Shop, attributes: ["id", "name", "isActive"] },
+        {
+          model: Role,
+          attributes: ["role"],
+          through: { attributes: [] },
+        },
+      ],
+    });
 
-  return res.status(200).json(userInstance);
+    return res.status(200).json(userInstance);
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
+
+exports.updateProfile = async (req, res) => {
+  const userId = req.userId;
+  const { address, postcode, country } = req.body;
+
+  try {
+    // userInstance for get Addr Id
+    const userInstance = await User.findByPk(userId);
+    if (!userInstance) {
+      return res.status(404).json({ Error: `Not Found UserId` });
+    }
+
+    // addrInstance from PK
+    const AddrInstanace = await Address.findByPk(userInstance.AddressId);
+    if (!AddrInstanace) {
+      return res.status(404).json({ Error: `Not Found Addr Id` });
+    }
+    AddrInstanace.address = address;
+    AddrInstanace.postcode = postcode;
+    AddrInstanace.country = country;
+
+    await AddrInstanace.save();
+    return res
+      .status(200)
+      .json({ message: `Completed Update Address Id :${id}` });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
 };
