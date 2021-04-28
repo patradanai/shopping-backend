@@ -3,7 +3,8 @@ const path = require("path");
 const { isAuth } = require("../middlewares/Auth.middleware");
 const Router = express();
 const multer = require("multer");
-var _ = require("lodash");
+const _ = require("lodash");
+const { v4 } = require("uuid");
 
 const limits = {
   files: 1, // allow only 1 file per request
@@ -32,7 +33,7 @@ var storageProfile = multer.diskStorage({
     cb(null, "images/profiles");
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now());
+    cb(null, v4() + path.extname(file.originalname));
   },
 });
 
@@ -41,7 +42,7 @@ var storageProduct = multer.diskStorage({
     cb(null, "images/products");
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now());
+    cb(null, v4() + path.extname(file.originalname));
   },
 });
 
