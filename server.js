@@ -7,6 +7,7 @@ const ShopRoutes = require("./src/routes/Shop.routes");
 const ProductRoutes = require("./src/routes/Product.routes");
 const CategoryRoutes = require("./src/routes/Category.routes");
 const CartRoutes = require("./src/routes/Cart.routes");
+const OrderRoutes = require("./src/routes/Order.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,6 +27,8 @@ app.use("/db_product", ProductRoutes);
 app.use("/db_category", CategoryRoutes);
 
 app.use("/db_cart", CartRoutes);
+
+app.use("/db_order", OrderRoutes);
 
 // Run Server
 db.sequelize

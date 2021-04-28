@@ -12,6 +12,7 @@ module.exports = (sequelize, Sequelize) => {
     Order.belongsTo(models.ShippingMethod);
     Order.belongsTo(models.Payment);
     Order.belongsTo(models.OrderStatus);
+    Order.belongsTo(models.Shop);
 
     Order.hasMany(models.Transaction);
 

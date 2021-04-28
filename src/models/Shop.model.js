@@ -12,6 +12,7 @@ module.exports = (sequelize, Sequelize) => {
     Shop.hasMany(models.User);
     Shop.hasMany(models.Product);
     Shop.hasMany(models.ShippingMethod);
+    Shop.hasMany(models.Order);
   };
 
   return Shop;
