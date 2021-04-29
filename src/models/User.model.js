@@ -9,6 +9,7 @@ module.exports = (sequelize, Sequelize) => {
       password: Sequelize.STRING,
       phone: Sequelize.STRING,
       isActive: Sequelize.BOOLEAN,
+      imageSrc: Sequelize.STRING,
     },
     {}
   );

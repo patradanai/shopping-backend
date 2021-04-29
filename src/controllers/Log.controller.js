@@ -13,7 +13,7 @@ exports.getLogs = async (req, res) => {
       include: {
         model: User,
         required: true,
-        attributes: ["id"],
+        attributes: ["id", "email"],
         include: { model: Shop, required: true, where: { id: id } },
       },
     });

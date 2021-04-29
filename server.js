@@ -92,6 +92,10 @@ db.sequelize
         { name: "Tool & Home Improvement" },
         { name: "Toy & Games" },
       ]);
+      db.StockTransactionType.bulkCreate([
+        { name: StockIn },
+        { name: StockOut },
+      ]);
     }
   })
   .catch((err) => console.log(err));

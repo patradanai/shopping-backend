@@ -14,6 +14,7 @@ module.exports = (sequelize, Sequelize) => {
     Product.belongsTo(models.Category);
     Product.belongsTo(models.Shop);
     Product.belongsTo(models.User);
+    Product.hasOne(models.Stock);
 
     Product.belongsToMany(models.Order, { through: models.OrderProduct });
 
