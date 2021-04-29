@@ -145,6 +145,13 @@ exports.signUpCustomer = async (req, res) => {
     // Save Role
     await userSaved.setRoles(role);
 
+    // Add Logs
+    await userInstance.createLog({
+      type: "INSERT",
+      eventType: "User",
+      description: `Insert user Id : ${userSaved.id} in User's Table `,
+    });
+
     return res.status(200).json({ message: "Register Complete" });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
@@ -199,6 +206,13 @@ exports.signUpModerator = async (req, res) => {
 
     // Save Role
     await userSaved.setRoles(role);
+
+    // Add Logs
+    await userInstance.createLog({
+      type: "INSERT",
+      eventType: "User",
+      description: `Insert user Id : ${userSaved.id} in User's Table by ${userId}`,
+    });
 
     return res.status(200).json({ message: "Register Complete" });
   } catch (err) {
@@ -261,6 +275,14 @@ exports.updateProfile = async (req, res) => {
     AddrInstanace.country = country;
 
     await AddrInstanace.save();
+
+    // Add Logs
+    await userInstance.createLog({
+      type: "UPDATE",
+      eventType: "User",
+      description: `Update user Id : ${userId} in User's Table`,
+    });
+
     return res
       .status(200)
       .json({ message: `Completed Update Address Id :${id}` });

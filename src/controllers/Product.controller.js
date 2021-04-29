@@ -11,7 +11,6 @@ exports.createProduct = async (req, res) => {
   const userId = req.userId;
   const { name, price, isActive, imageSrc, description, categoryId } = req.body;
 
-  console.log(name, price, isActive, imageSrc, description, categoryId);
   try {
     // Check User
     const userInstance = await User.findByPk(userId);
@@ -49,6 +48,13 @@ exports.createProduct = async (req, res) => {
     // await productInstance.setUser(userInstance);
     // await productInstance.setShop([shopId.id]);
 
+    // Add Logs
+    await userInstance.createLog({
+      type: "INSERT",
+      eventType: "PRODUCT",
+      description: "Insert Product in Product's Table",
+    });
+
     return res.status(200).json({ message: "Create Product Completed" });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
@@ -83,6 +89,13 @@ exports.updateProduct = async (req, res) => {
 
     await ProductInstance[0].save();
 
+    // Add Logs
+    await userInstance.createLog({
+      type: "UPDATE",
+      eventType: "PRODUCT",
+      description: `Update Product Id : ${id} in Product's Table`,
+    });
+
     return res.status(200).json({ message: "Completed Update Product " });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
@@ -105,6 +118,14 @@ exports.deleteProduct = async (req, res) => {
     }
 
     await productInstance[0].destroy();
+
+    // Add Logs
+    await userInstance.createLog({
+      type: "Delete",
+      eventType: "PRODUCT",
+      description: `Delete Product Id : ${id} in Product's Table`,
+    });
+
     return res.status(200).json({ message: "Completed Delete Product" });
   } catch (err) {
     return res.status(500).json({ Error: err.message });

@@ -5,7 +5,11 @@ const { isRole } = require("../middlewares/Role.middleware");
 const {
   shopUpdate,
   shopCreateShipping,
+  shopProfile,
 } = require("../controllers/Shop.controller");
+
+// GET /shop/:id
+Router.get("/shop/:id", [isAuth, isRole("Administrator")], shopProfile);
 
 // PUT /shop/:id/edit
 Router.put("/shop/:id/edit", [isAuth, isRole("Administrator")], shopUpdate);

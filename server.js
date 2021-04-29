@@ -11,6 +11,7 @@ const CategoryRoutes = require("./src/routes/Category.routes");
 const CartRoutes = require("./src/routes/Cart.routes");
 const OrderRoutes = require("./src/routes/Order.routes");
 const ImageRoutes = require("./src/routes/Image.routes");
+const LogRoutes = require("./src/routes/Log.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -34,6 +35,8 @@ app.use("/db_cart", CartRoutes);
 app.use("/db_order", OrderRoutes);
 
 app.use("/db_image", ImageRoutes);
+
+app.use("/db_log", LogRoutes);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
