@@ -158,7 +158,7 @@ exports.signUpCustomer = async (req, res) => {
  * @returns
  */
 exports.signUpModerator = async (req, res) => {
-  const { email, fname, lname, password } = req.body;
+  const { email, fname, lname, password, phone } = req.body;
   const userId = req.userId; // Owner Id
 
   try {
@@ -178,6 +178,7 @@ exports.signUpModerator = async (req, res) => {
       email: email,
       fname: fname,
       lname: lname,
+      phone: phone,
       isActive: true,
     });
     const userInstanace = await User.findByPk(userId);
