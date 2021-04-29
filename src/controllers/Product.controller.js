@@ -11,6 +11,7 @@ exports.createProduct = async (req, res) => {
   const userId = req.userId;
   const { name, price, isActive, imageSrc, description, categoryId } = req.body;
 
+  console.log(name, price, isActive, imageSrc, description, categoryId);
   try {
     // Check User
     const userInstance = await User.findByPk(userId);
@@ -151,7 +152,10 @@ exports.shopProducts = async (req, res) => {
 
   try {
     // Easy Logic Rnd Show
-    const productInstace = await Product.findAll({ where: { ShopId: shopId } });
+    const productInstace = await Product.findAll({
+      where: { ShopId: shopId },
+      include: { model: Category, attributes: ["name"] },
+    });
 
     return res.status(200).json({ data: productInstace });
   } catch (err) {

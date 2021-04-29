@@ -284,6 +284,11 @@ exports.memberShop = async (req, res) => {
     const shopInstance = await Shop.findByPk(userInstance.ShopId);
 
     const allMemberShop = await shopInstance.getUsers({
+      include: {
+        model: Role,
+        attributes: ["role"],
+        through: { attributes: [] },
+      },
       attributes: {
         exclude: ["username", "password", "createdAt", "updatedAt"],
       },
