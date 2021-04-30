@@ -7,7 +7,11 @@ const {
   updateOrder,
   placeOrder,
   getOrderByShop,
+  getOrderStatus,
 } = require("../controllers/Order.controller");
+
+// GET /statusOrder
+Router.get("/statusOrder", [isAuth], getOrderStatus);
 
 // GET
 Router.get("/orders", [isAuth, isRole("Staff", "Administrator")], getOrder);

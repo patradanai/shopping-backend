@@ -3,6 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "Order",
     {
       orderStatus: Sequelize.STRING,
+      trackingNumber: Sequelize.STRING,
       subTotal: Sequelize.FLOAT,
       grandTotal: Sequelize.FLOAT,
     },

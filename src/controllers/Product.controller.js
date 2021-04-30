@@ -38,7 +38,6 @@ exports.createProduct = async (req, res) => {
     }
 
     // Create Stock
-    // Create Stock
     await productInstance.createStock(
       {
         quantity: 0,

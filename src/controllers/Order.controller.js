@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const db = require("../models");
 const User = db.User;
 const Order = db.Order;
+const OrderStatus = db.OrderStatus;
 const StockTransactionType = db.StockTransactionType;
 
 exports.getOrder = async (req, res) => {
@@ -19,7 +20,32 @@ exports.getOrder = async (req, res) => {
   }
 };
 
-exports.getOrderByShop = async (req, res) => {};
+exports.getOrderByShop = async (req, res) => {
+  const userId = req.userId;
+  const { shopId } = req.params;
+
+  try {
+    // get userInstance
+    const userInstance = await User.findByPk(userId);
+
+    // get shopInstance
+    const shopInstance = await userInstance.getShop();
+
+    if (shopId != shopInstance.id) {
+      return res.status(401).json({ Error: "Unthorization with This Shop" });
+    }
+
+    // Get orderInstance
+    const orderInstance = await Order.findAll({
+      where: { id: shopInstance.id },
+      include: { all: true },
+    });
+
+    return res.status(200).json({ order: orderInstance });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
 
 exports.placeOrder = async (req, res) => {
   const userId = req.userId;
@@ -154,9 +180,57 @@ exports.placeOrder = async (req, res) => {
 
 exports.updateOrder = async (req, res) => {
   const userId = req.userId;
+  const { shopId, id } = req.params;
+  const { statusId, tracking } = req.body;
 
   try {
     // Check User
+    const userInstance = await User.findByPk(userId);
+    if (!userInstance) return res.status(404).json({ Error: "User not found" });
+
+    // get shopInstance
+    const shopInstance = await userInstance.getShop();
+    if (shopId != shopInstance.id) {
+      return res.status(400).json({ Error: "Bad Request" });
+    }
+
+    const orderInstance = await shopInstance.getOrders({ where: id });
+    if (!orderInstance) {
+      return res.status(400).json({ Error: "failure processed" });
+    }
+
+    orderInstance.trackingNumber = tracking;
+    orderInstance.OrderStatusId = statusId;
+
+    await orderInstance.save();
+
+    // Create log
+    await userInstance.createLog({
+      type: "UPDATE",
+      eventType: "ORDER",
+      description: `Update Order ${id} in Order's Table`,
+    });
+
+    // Create transaction
+
+    orderInstance.createTransaction({
+      OrderStatusId: statusId,
+      PaymentId: orderInstance.PaymentId,
+      UserId: orderInstance.UserId,
+    });
+
+    return res.status(200).json({ message: "Update Order Success" });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
+
+exports.getOrderStatus = async (req, res) => {
+  try {
+    // get orderStatusInstance
+    const orderStatusInstance = await OrderStatus.findAll();
+
+    return res.status(200).json(orderStatusInstance);
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
