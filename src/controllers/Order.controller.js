@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const db = require("../models");
 const User = db.User;
 const Order = db.Order;
+const StockTransactionType = db.StockTransactionType;
 
 exports.getOrder = async (req, res) => {
   const userId = req.userId;
@@ -47,9 +48,9 @@ exports.placeOrder = async (req, res) => {
       // Create Order
       userInstance
         .createOrder({
-          orderStatusId: orderStatusId,
-          PaymentId: paymenyId,
-          ShippingMethodId: shippingMethodId,
+          // orderStatusId: orderStatusId,
+          // PaymentId: paymenyId,
+          // ShippingMethodId: shippingMethodId,
           ShopId: product.ShopId,
         })
         .then((order) => {
@@ -59,23 +60,49 @@ exports.placeOrder = async (req, res) => {
               where: { ShopId: product.ShopId },
             })
             .then((products) => {
-              order.addProduct(
-                products.map((product) => {
-                  product.OrderProduct = {
-                    quantity: product.CartProduct.quantity,
-                  };
-                  return product;
-                })
-              );
+              // order -> addProduct
+              order
+                .addProduct(
+                  products.map((product) => {
+                    product.OrderProduct = {
+                      quantity: product.CartProduct.quantity,
+                    };
+                    return product;
+                  })
+                )
+                .then(() => {})
+                .catch((err) => console.log(err));
+
+              // Product -> createStockTransaction
+              products.map((product) => {
+                product
+                  .getStock()
+                  .then((stock) => {
+                    return stock.createStockTransaction({
+                      quantity: product.CartProduct.quantity,
+                    });
+                  })
+                  .then((stockTransaction) => {
+                    StockTransactionType.findOne({
+                      where: { name: "StockOut" },
+                    }).then((type) => {
+                      stockTransaction.setStockTransactionType(type);
+                    });
+                  })
+                  .catch((err) => console.log(err));
+              });
             })
             .catch((err) => console.log(err));
 
           // Order --> createTransaction
           order
             .createTransaction()
-            .then(async (transac) => {
+            .then((transac) => {
               // Set userId in Transaction
-              await transac.set(userInstance);
+              transac
+                .set(userInstance)
+                .then(() => {})
+                .catch((err) => console.log(err));
             })
             .catch((err) => console.log(err));
         })
