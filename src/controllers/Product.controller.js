@@ -37,6 +37,13 @@ exports.createProduct = async (req, res) => {
       return res.status(403).json({ Error: "Create product failure" });
     }
 
+    // Create Stock
+    await productInstance.createStock({
+      quantity: 0,
+      minOrder: 0,
+      quantityOrder: 0,
+    });
+
     // // Create Product
     // const productInstance = await Product.create({
     //   name: name,

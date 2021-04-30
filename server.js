@@ -68,6 +68,7 @@ db.sequelize
         { name: "Cod" },
         { name: "Credit Card" },
         { name: "Paypal" },
+        { name: "Direct Bank" },
       ]);
       db.Category.bulkCreate([
         { name: "All Departments" },
@@ -93,8 +94,8 @@ db.sequelize
         { name: "Toy & Games" },
       ]);
       db.StockTransactionType.bulkCreate([
-        { name: StockIn },
-        { name: StockOut },
+        { name: "StockIn" },
+        { name: "StockOut" },
       ]);
     }
   })
