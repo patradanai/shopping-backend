@@ -181,8 +181,30 @@ exports.shopProducts = async (req, res) => {
   try {
     // Easy Logic Rnd Show
     const productInstace = await Product.findAll({
+      attributes: {
+        include: [
+          [
+            Sequelize.fn(
+              "SUM",
+              Sequelize.literal(
+                "(CASE `Stock->StockTransactions->StockTransactionType`.`name` WHEN 'StockOut' THEN `Stock->StockTransactions`.`quantity`*-1 ELSE `Stock->StockTransactions`.`quantity` END)"
+              )
+            ),
+            "quantity",
+          ],
+        ],
+      },
       where: { ShopId: shopId },
-      include: { model: Category, attributes: ["name"] },
+      include: [
+        { model: Category, attributes: ["name"] },
+        {
+          model: db.Stock,
+          include: {
+            model: db.StockTransaction,
+            include: { model: db.StockTransactionType },
+          },
+        },
+      ],
     });
 
     return res.status(200).json({ data: productInstace });

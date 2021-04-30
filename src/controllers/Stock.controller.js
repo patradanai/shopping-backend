@@ -27,7 +27,7 @@ exports.updateStock = async (req, res) => {
     }
 
     // getStock Instance
-    const stockInstance = await productInstance.getStock();
+    const stockInstance = await productInstance[0].getStock();
 
     // get StockTransaction
     const stockTransactionInstance = await stockInstance.createStockTransaction(
@@ -48,5 +48,4 @@ exports.updateStock = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
-  return;
 };
