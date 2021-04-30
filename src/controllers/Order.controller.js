@@ -183,6 +183,7 @@ exports.updateOrder = async (req, res) => {
   const { shopId, id } = req.params;
   const { statusId, tracking } = req.body;
 
+  console.log(shopId, id, statusId, tracking);
   try {
     // Check User
     const userInstance = await User.findByPk(userId);
@@ -194,15 +195,15 @@ exports.updateOrder = async (req, res) => {
       return res.status(400).json({ Error: "Bad Request" });
     }
 
-    const orderInstance = await shopInstance.getOrders({ where: id });
-    if (!orderInstance) {
+    const orderInstance = await shopInstance.getOrders({ where: { id: id } });
+    if (!orderInstance[0]) {
       return res.status(400).json({ Error: "failure processed" });
     }
 
-    orderInstance.trackingNumber = tracking;
-    orderInstance.OrderStatusId = statusId;
+    orderInstance[0].trackingNumber = tracking;
+    orderInstance[0].OrderStatusId = statusId;
 
-    await orderInstance.save();
+    await orderInstance[0].save();
 
     // Create log
     await userInstance.createLog({
@@ -213,10 +214,10 @@ exports.updateOrder = async (req, res) => {
 
     // Create transaction
 
-    orderInstance.createTransaction({
+    orderInstance[0].createTransaction({
       OrderStatusId: statusId,
-      PaymentId: orderInstance.PaymentId,
-      UserId: orderInstance.UserId,
+      PaymentId: orderInstance[0].PaymentId,
+      UserId: orderInstance[0].UserId,
     });
 
     return res.status(200).json({ message: "Update Order Success" });
