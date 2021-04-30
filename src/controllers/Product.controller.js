@@ -38,11 +38,18 @@ exports.createProduct = async (req, res) => {
     }
 
     // Create Stock
-    await productInstance.createStock({
-      quantity: 0,
-      minOrder: 0,
-      quantityOrder: 0,
-    });
+    // Create Stock
+    await productInstance.createStock(
+      {
+        quantity: 0,
+        minOrder: 0,
+        quantityOrder: 0,
+        StockTransactions: [{ quantity: 0, StockTransactionTypeId: 1 }],
+      },
+      {
+        include: [db.StockTransaction],
+      }
+    );
 
     // // Create Product
     // const productInstance = await Product.create({
@@ -181,26 +188,32 @@ exports.shopProducts = async (req, res) => {
   try {
     // Easy Logic Rnd Show
     const productInstace = await Product.findAll({
-      attributes: {
-        include: [
-          [
-            Sequelize.fn(
-              "SUM",
-              Sequelize.literal(
-                "(CASE `Stock->StockTransactions->StockTransactionType`.`name` WHEN 'StockOut' THEN `Stock->StockTransactions`.`quantity`*-1 ELSE `Stock->StockTransactions`.`quantity` END)"
-              )
-            ),
-            "quantity",
-          ],
+      attributes: [
+        "id",
+        "name",
+        "imageSrc",
+        "price",
+        "isActive",
+        [
+          Sequelize.fn(
+            "SUM",
+            Sequelize.literal(
+              "(CASE `Stock->StockTransactions->StockTransactionType`.`name` WHEN 'StockOut' THEN `Stock->StockTransactions`.`quantity`*-1 ELSE `Stock->StockTransactions`.`quantity` END)"
+            )
+          ),
+          "quantity",
         ],
-      },
+      ],
+      group: ["id"],
       where: { ShopId: shopId },
       include: [
-        { model: Category, attributes: ["name"] },
+        { model: Category, required: false, attributes: ["name"] },
         {
           model: db.Stock,
+          required: false,
           include: {
             model: db.StockTransaction,
+            required: false,
             include: { model: db.StockTransactionType },
           },
         },
