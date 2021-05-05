@@ -12,7 +12,16 @@ exports.getCart = async (req, res) => {
 
     // Get Cart
     const cartInstance = await userInstance.getCart({
-      include: "Products",
+      include: [
+        {
+          model: db.Product,
+          attributes: { exclude: ["createdAt", "updatedAt"] },
+          include: {
+            model: db.Category,
+            attributes: { exclude: ["createdAt", "updatedAt"] },
+          },
+        },
+      ],
     });
 
     return res.status(200).json({ data: cartInstance });
@@ -23,8 +32,8 @@ exports.getCart = async (req, res) => {
 
 exports.addCart = async (req, res) => {
   const userId = req.userId;
-  const { productId } = req.body;
-  let quantity = 1;
+  const { productId, quantity } = req.body;
+  let newQuantity;
   try {
     // Check User
     const userInstance = await User.findByPk(userId);
@@ -37,7 +46,15 @@ exports.addCart = async (req, res) => {
       where: { id: productId },
     });
     if (cartProduct.length > 0) {
-      quantity = cartProduct[0].CartProduct.quantity + 1; // If Found Product in Cart Add more
+      newQuantity = cartProduct[0].CartProduct.quantity + quantity; // If Found Product in Cart Add more
+
+      // if Q'ty = 0 destroy
+      if (newQuantity <= 0) {
+        await cartProduct[0].destroy();
+        return res
+          .status(200)
+          .json({ message: "Alreay delted product in cart" });
+      }
     }
 
     const ProductInstance = await Product.findByPk(productId);
@@ -45,7 +62,7 @@ exports.addCart = async (req, res) => {
     // add ( add new Column ) vs set ( replace seem column )
 
     await cartInstance.addProducts(ProductInstance, {
-      through: { quantity: quantity },
+      through: { quantity: newQuantity },
     });
 
     const allProduct = await cartInstance.getProducts();

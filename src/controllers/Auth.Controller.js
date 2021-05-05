@@ -309,7 +309,7 @@ exports.updateAddress = async (req, res) => {
     }
 
     // addrInstance from PK
-    const AddrInstanace = await Address.findByPk(userInstance.AddressId);
+    const AddrInstanace = await userInstance.getAddress();
     if (!AddrInstanace) {
       return res.status(404).json({ Error: `Not Found Addr Id` });
     }
@@ -328,7 +328,7 @@ exports.updateAddress = async (req, res) => {
 
     return res
       .status(200)
-      .json({ message: `Completed Update Address Id :${id}` });
+      .json({ message: `Completed Update Address Id :${userId}` });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }

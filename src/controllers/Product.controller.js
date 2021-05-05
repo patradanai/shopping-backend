@@ -168,6 +168,10 @@ exports.product = async (req, res) => {
   try {
     const productInstace = await Product.findByPk(id, {
       attributes: { exclude: ["UserId", "createdAt", "updatedAt"] },
+      include: {
+        model: Category,
+        attributes: { exclude: ["createdAt", "updatedAt"] },
+      },
     });
     if (!productInstace) {
       return res.status(404).json({ Error: `Not Found Product Id : ${id}` });
