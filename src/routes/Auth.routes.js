@@ -7,6 +7,7 @@ const {
   signUpModerator,
   profileUser,
   updateProfile,
+  updateAddress,
   memberShop,
 } = require("../controllers/Auth.controller");
 const { isAuth } = require("../middlewares/Auth.middleware.js");
@@ -36,5 +37,8 @@ Router.get("/profile", isAuth, profileUser);
 
 // Put Update Profile
 Router.put("/profile/edit", isAuth, updateProfile);
+
+// Put Update Profile
+Router.put("/address/edit", isAuth, updateAddress);
 
 module.exports = Router;

@@ -14,7 +14,7 @@ const {
 Router.get("/statusOrder", [isAuth], getOrderStatus);
 
 // GET
-Router.get("/orders", [isAuth, isRole("Staff", "Administrator")], getOrder);
+Router.get("/orders", [isAuth], getOrder);
 
 // POST
 Router.post("/order", [isAuth, isRole("Staff", "Administrator")], placeOrder);

@@ -1,6 +1,7 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const e = require("express");
 const User = db.User;
 const Role = db.Role;
 const Shop = db.Shop;
@@ -13,7 +14,7 @@ const Address = db.Address;
  * @returns
  */
 exports.signIn = async (req, res) => {
-  const { username, password } = req.body;
+  const { username, password, expiredIn } = req.body;
 
   // Validate User and Password
   if (!username || !password) {
@@ -36,12 +37,20 @@ exports.signIn = async (req, res) => {
       return res.status(401).json({ Error: "User or Password invalid" });
     }
 
+    let token;
     // Token
-    const token = jwt.sign(
-      { userId: user.id, name: user.fname + user.lname },
-      process.env.SECRET_KEY,
-      { expiresIn: "1h" }
-    );
+    if (expiredIn) {
+      token = jwt.sign(
+        { userId: user.id, name: user.fname + user.lname },
+        process.env.SECRET_KEY,
+        { expiresIn: "1h" }
+      );
+    } else {
+      token = jwt.sign(
+        { userId: user.id, name: user.fname + user.lname },
+        process.env.SECRET_KEY
+      );
+    }
 
     return res.status(200).json({ token: token });
   } catch (err) {
@@ -231,13 +240,16 @@ exports.profileUser = async (req, res) => {
 
   try {
     const userInstance = await User.findByPk(userId, {
-      attributes: ["email", "fname", "lname", "phone"],
+      attributes: ["email", "fname", "lname", "phone", "imageSrc"],
       include: [
         { model: Shop, attributes: ["id", "name", "isActive"] },
         {
           model: Role,
           attributes: ["role"],
           through: { attributes: [] },
+        },
+        {
+          model: Address,
         },
       ],
     });
@@ -255,6 +267,37 @@ exports.profileUser = async (req, res) => {
  * @returns
  */
 exports.updateProfile = async (req, res) => {
+  const userId = req.userId;
+  const { address, postcode, country, fname, lname, phone, email } = req.body;
+
+  try {
+    // userInstance for get Addr Id
+    const userInstance = await User.findByPk(userId);
+    if (!userInstance) {
+      return res.status(404).json({ Error: `Not Found UserId` });
+    }
+
+    userInstance.fname = fname;
+    userInstance.lname = lname;
+    userInstance.phone = phone;
+    userInstance.email = email;
+
+    await userInstance.save();
+
+    // Add Logs
+    await userInstance.createLog({
+      type: "UPDATE",
+      eventType: "User",
+      description: `Update user Id : ${userId} in User's Table`,
+    });
+
+    return res.status(200).json({ message: `Completed Update Id :${userId}` });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};
+
+exports.updateAddress = async (req, res) => {
   const userId = req.userId;
   const { address, postcode, country } = req.body;
 

@@ -12,7 +12,7 @@ exports.getOrder = async (req, res) => {
     // Check User
     const userInstance = await User.findByPk(userId);
 
-    const orderInstace = await userInstance.getOrder();
+    const orderInstace = await userInstance.getOrders();
 
     return res.status(200).json({ data: orderInstace });
   } catch (err) {
