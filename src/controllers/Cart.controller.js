@@ -33,7 +33,7 @@ exports.getCart = async (req, res) => {
 exports.addCart = async (req, res) => {
   const userId = req.userId;
   const { productId, quantity } = req.body;
-  let newQuantity;
+  let newQuantity = quantity;
   try {
     // Check User
     const userInstance = await User.findByPk(userId);
@@ -45,16 +45,13 @@ exports.addCart = async (req, res) => {
     const cartProduct = await cartInstance.getProducts({
       where: { id: productId },
     });
-    if (cartProduct.length > 0) {
-      newQuantity = cartProduct[0].CartProduct.quantity + quantity; // If Found Product in Cart Add more
-
-      // if Q'ty = 0 destroy
-      if (newQuantity <= 0) {
-        await cartProduct[0].destroy();
-        return res
-          .status(200)
-          .json({ message: "Alreay delted product in cart" });
-      }
+    // if (cartProduct.length > 0) {
+    //   newQuantity = cartProduct[0].CartProduct.quantity + quantity; // If Found Product in Cart Add more
+    // }
+    // if Q'ty = 0 destroy
+    if (newQuantity <= 0) {
+      await cartProduct[0].destroy();
+      return res.status(200).json({ message: "Alreay delted product in cart" });
     }
 
     const ProductInstance = await Product.findByPk(productId);
