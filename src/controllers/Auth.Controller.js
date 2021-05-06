@@ -97,6 +97,8 @@ exports.signUp = async (req, res) => {
     // Create Address
     await userSaved.createAddress();
 
+    await userSaved.createWishlist();
+
     // Create Cart
     await userSaved.createCart();
 
@@ -144,6 +146,8 @@ exports.signUpCustomer = async (req, res) => {
 
     // Create Address
     await userSaved.createAddress();
+
+    await userSaved.createWishlist();
 
     // Create Cart
     await userSaved.createCart();
@@ -206,6 +210,8 @@ exports.signUpModerator = async (req, res) => {
 
     // Create Address
     await userSaved.createAddress();
+
+    await userSaved.createWishlist();
 
     // Create Cart
     await userSaved.createCart();

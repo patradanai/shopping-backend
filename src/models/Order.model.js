@@ -2,6 +2,11 @@ module.exports = (sequelize, Sequelize) => {
   const Order = sequelize.define(
     "Order",
     {
+      name: Sequelize.STRING,
+      shippingAddress: Sequelize.STRING,
+      phone: Sequelize.STRING,
+      email: Sequelize.STRING,
+      status: Sequelize.STRING,
       orderStatus: Sequelize.STRING,
       trackingNumber: Sequelize.STRING,
       subTotal: Sequelize.FLOAT,

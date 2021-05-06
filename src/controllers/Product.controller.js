@@ -252,7 +252,7 @@ exports.findProducts = async (req, res) => {
   const { Op } = Sequelize;
   const { search } = req.query;
 
-  console.log(req.query.search);
+
 
   try {
     const productInstance = await Product.findAll({

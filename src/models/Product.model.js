@@ -19,6 +19,8 @@ module.exports = (sequelize, Sequelize) => {
     Product.belongsToMany(models.Order, { through: models.OrderProduct });
 
     Product.belongsToMany(models.Cart, { through: models.CartProduct });
+
+    Product.belongsToMany(models.WishList, { through: "wish_products" });
   };
 
   return Product;

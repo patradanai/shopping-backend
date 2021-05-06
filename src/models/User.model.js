@@ -10,6 +10,7 @@ module.exports = (sequelize, Sequelize) => {
       phone: Sequelize.STRING,
       isActive: Sequelize.BOOLEAN,
       imageSrc: Sequelize.STRING,
+      phone: Sequelize.STRING,
     },
     {}
   );
@@ -22,6 +23,7 @@ module.exports = (sequelize, Sequelize) => {
     User.hasOne(models.Cart);
     User.belongsToMany(models.Role, { through: "user_roles" });
     User.belongsTo(models.Address);
+    User.hasOne(models.WishList);
   };
 
   return User;

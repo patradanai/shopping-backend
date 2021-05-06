@@ -64,7 +64,7 @@ db.sequelize
         { name: "Pending" },
         { name: "Paid" },
         { name: "Delivery" },
-        { name: "Processed" },
+        { name: "Completed" },
         { name: "Cancelled" },
       ]);
       db.Payment.bulkCreate([
@@ -95,10 +95,18 @@ db.sequelize
         { name: "Sport & Outdoor" },
         { name: "Tool & Home Improvement" },
         { name: "Toy & Games" },
+        { name: "Others" },
       ]);
       db.StockTransactionType.bulkCreate([
         { name: "StockIn" },
         { name: "StockOut" },
+      ]);
+      db.ShippingMethod.bulkCreate([
+        { name: "Standard", price: 30 },
+        { name: "Ems", price: 50 },
+        { name: "Kerry", price: 50 },
+        { name: "Flash", price: 35 },
+        { name: "J&T", price: 35 },
       ]);
     }
   })
