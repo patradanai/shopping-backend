@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const db = require("./src/models");
 const cors = require("cors");
-const isForceDb = false;
+const isForceDb = true;
 
 const AuthRoutes = require("./src/routes/Auth.routes");
 const ShopRoutes = require("./src/routes/Shop.routes");
@@ -77,28 +77,28 @@ db.sequelize
         { name: "Direct Bank" },
       ]);
       db.Category.bulkCreate([
-        { name: "All Departments" },
-        { name: "Arts & Crafts" },
-        { name: "Automotive" },
-        { name: "Baby" },
-        { name: "Beauty & Personal Care" },
-        { name: "Book" },
-        { name: "Computers" },
-        { name: "Electronics" },
-        { name: "Woman's Fashion" },
-        { name: "Men's Fashion" },
-        { name: "Gril's Fashion" },
-        { name: "Boy's Fashion" },
-        { name: "Health & HouseHold" },
-        { name: "Home & Kitchen" },
-        { name: "Industrial & Scienfics" },
-        { name: "Luggage" },
-        { name: "Pet Suppliers" },
-        { name: "Software & Hardware" },
-        { name: "Sport & Outdoor" },
-        { name: "Tool & Home Improvement" },
-        { name: "Toy & Games" },
-        { name: "Others" },
+        { name: "All Departments", imageSrc: "all_dep.png" },
+        { name: "Arts & Crafts", imageSrc: "art&craft.png" },
+        { name: "Automotive", imageSrc: "automotive.png" },
+        { name: "Baby", imageSrc: "baby.png" },
+        { name: "Beauty & Personal Care", imageSrc: "beauty.png" },
+        { name: "Book", imageSrc: "book.png" },
+        { name: "Computers", imageSrc: "computer.png" },
+        { name: "Electronics", imageSrc: "electronic.png" },
+        { name: "Woman's Fashion", imageSrc: "woman_fashion.png" },
+        { name: "Men's Fashion", imageSrc: "men_fashion.png" },
+        { name: "Girl's Fashion", imageSrc: "girl_fashion.png" },
+        { name: "Boy's Fashion", imageSrc: "boy_fashion.png" },
+        { name: "Health & HouseHold", imageSrc: "health.png" },
+        { name: "Home & Kitchen", imageSrc: "home_kitchen.png" },
+        { name: "Industrial & Scienfics", imageSrc: "scienfic.png" },
+        { name: "Luggage", imageSrc: "luggage.png" },
+        { name: "Pet Suppliers", imageSrc: "pet.png" },
+        { name: "Software & Hardware", imageSrc: "software.png" },
+        { name: "Sport & Outdoor", imageSrc: "sport.png" },
+        { name: "Tool & Home Improvement", imageSrc: "tool.png" },
+        { name: "Toy & Games", imageSrc: "toy.png" },
+        { name: "Others", imageSrc: "other.png" },
       ]);
       db.StockTransactionType.bulkCreate([
         { name: "StockIn" },

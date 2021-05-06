@@ -1,9 +1,12 @@
 const Sequelize = require("sequelize");
+const nodemailer = require("nodemailer");
 const db = require("../models");
 const User = db.User;
 const Order = db.Order;
 const OrderStatus = db.OrderStatus;
 const StockTransactionType = db.StockTransactionType;
+const { digioConfig } = require("../config/email");
+const transporter = nodemailer.createTransport(digioConfig);
 
 exports.getOrder = async (req, res) => {
   const userId = req.userId;
@@ -133,12 +136,48 @@ exports.placeOrder = async (req, res) => {
                 .catch((err) => console.log(err));
             })
             .catch((err) => console.log(err));
+
+          return order;
+        })
+        .then((order) => {
+          transporter
+            .sendMail({
+              from: "", // sender address
+              to: userInstance.email, // list of receivers
+              subject: `Order #${order.id} Confirmed `, // Subject line
+              html: `<p><span style='font-family: "Lucida Console", Monaco, monospace;'>Order #${order.id}</span></p>
+              <p><span style="background-color: rgb(0, 168, 133);"><br></span></p>
+              <p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Shopping with us</em></strong></span></span></span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">Hi ${User.name}</span></span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">We&apos;ve received your order and we&apos;re already getting started on it.&nbsp;</span></span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">You will get an emil soon with all the details.</span></span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+              <table style="width: 100%;">
+                  <tbody>
+                      <tr>
+                          <td style="width: 50.0000%;"><span style="font-family: 'Lucida Console', Monaco, monospace;">Order Number</span></td>
+                          <td style="width: 50.0000%;"><span style="font-family: 'Lucida Console', Monaco, monospace;">Order Date</span></td>
+                      </tr>
+                      <tr>
+                          <td style="width: 50.0000%;"><span style="font-family: 'Lucida Console', Monaco, monospace;">#${order.id}</span></td>
+                          <td style="width: 50.0000%;"><span style="font-family: 'Lucida Console', Monaco, monospace;">${order.createdAt}</span></td>
+                      </tr>
+                  </tbody>
+              </table>
+              <p><br></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Thank you&nbsp;</span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Best regards</span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;">E-Shipping</span></p>`, // html body
+            })
+            .then()
+            .catch((err) => console.log(err));
         })
         .then(async () => {
           // Clear Cart
-          // cartInstance.subTotal = 0;
-          // await cartInstance.save();
-          // await cartInstance.setProducts([]);
+          cartInstance.subTotal = 0;
+          await cartInstance.save();
+          await cartInstance.setProducts([]);
         })
         .catch((err) => console.log(err));
     });

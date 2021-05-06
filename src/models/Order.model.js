@@ -6,7 +6,11 @@ module.exports = (sequelize, Sequelize) => {
       shippingAddress: Sequelize.STRING,
       phone: Sequelize.STRING,
       email: Sequelize.STRING,
-      status: Sequelize.STRING,
+      status: {
+        type: Sequelize.ENUM,
+        values: ["Pending", "Paid", "Delivery", "Completed", "Cancelled"],
+        defaultValue: "Pending",
+      },
       orderStatus: Sequelize.STRING,
       trackingNumber: Sequelize.STRING,
       subTotal: Sequelize.FLOAT,
