@@ -13,6 +13,7 @@ const OrderRoutes = require("./src/routes/Order.routes");
 const ImageRoutes = require("./src/routes/Image.routes");
 const LogRoutes = require("./src/routes/Log.routes");
 const StockRoutes = require("./src/routes/Stock.routes");
+const WishRoutes = require("./src/routes/Wish.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,6 +41,8 @@ app.use("/db_image", ImageRoutes);
 app.use("/db_log", LogRoutes);
 
 app.use("/db_stock", StockRoutes);
+
+app.use("/db_wish", WishRoutes);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 
