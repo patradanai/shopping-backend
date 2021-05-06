@@ -12,7 +12,9 @@ exports.getOrder = async (req, res) => {
     // Check User
     const userInstance = await User.findByPk(userId);
 
-    const orderInstace = await userInstance.getOrders();
+    const orderInstace = await userInstance.getOrders({
+      include: ["Products"],
+    });
 
     return res.status(200).json({ data: orderInstace });
   } catch (err) {
@@ -134,9 +136,9 @@ exports.placeOrder = async (req, res) => {
         })
         .then(async () => {
           // Clear Cart
-          cartInstance.subTotal = 0;
-          await cartInstance.save();
-          await cartInstance.setProducts([]);
+          // cartInstance.subTotal = 0;
+          // await cartInstance.save();
+          // await cartInstance.setProducts([]);
         })
         .catch((err) => console.log(err));
     });

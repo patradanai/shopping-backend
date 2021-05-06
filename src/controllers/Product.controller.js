@@ -247,3 +247,31 @@ exports.shopProduct = async (req, res) => {
     return res.status(500).json({ Error: err.message });
   }
 };
+
+exports.findProducts = async (req, res) => {
+  const { Op } = Sequelize;
+  const { search } = req.query;
+
+  console.log(req.query.search);
+
+  try {
+    const productInstance = await Product.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.substring]: `${search}` } },
+          { description: { [Op.substring]: `${search}` } },
+          { "$Shop.name$": { [Op.substring]: `${search}` } },
+        ],
+      },
+      include: [
+        {
+          model: db.Shop,
+          required: false,
+        },
+      ],
+    });
+    return res.status(200).json({ data: productInstance });
+  } catch (err) {
+    return res.status(500).json({ Error: err.message });
+  }
+};

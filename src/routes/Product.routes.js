@@ -8,6 +8,7 @@ const {
   products,
   shopProduct,
   shopProducts,
+  findProducts,
 } = require("../controllers/Product.controller");
 const { isAuth } = require("../middlewares/Auth.middleware");
 const { isRole } = require("../middlewares/Role.middleware");
@@ -44,5 +45,8 @@ Router.delete(
   [isAuth, isRole("Administrator", "Staff")],
   deleteProduct
 );
+
+// GET /product/find?search=..
+Router.get("/products/find", findProducts);
 
 module.exports = Router;
