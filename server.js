@@ -2,7 +2,7 @@ const express = require("express");
 const path = require("path");
 const db = require("./src/models");
 const cors = require("cors");
-const isForceDb = true;
+const isForceDb = false;
 
 const AuthRoutes = require("./src/routes/Auth.routes");
 const ShopRoutes = require("./src/routes/Shop.routes");

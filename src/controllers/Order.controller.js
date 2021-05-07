@@ -142,7 +142,7 @@ exports.placeOrder = async (req, res) => {
         .then((order) => {
           transporter
             .sendMail({
-              from: "", // sender address
+              from: "patradanai@digipay.dev", // sender address
               to: userInstance.email, // list of receivers
               subject: `Order #${order.id} Confirmed `, // Subject line
               html: `<p><span style='font-family: "Lucida Console", Monaco, monospace;'>Order #${order.id}</span></p>
@@ -260,6 +260,30 @@ exports.updateOrder = async (req, res) => {
       PaymentId: orderInstance[0].PaymentId,
       UserId: orderInstance[0].UserId,
     });
+
+    if (statusId === 3) {
+      await transporter.sendMail({
+        from: "E-shopping@digipay.dev", // sender address
+        to: userSaved.email, // list of receivers
+        subject: `E-Shopping : Your order has been sent out`, // Subject line
+        html: `<h1 style="font-family: Verdana, Arial, Helvetica, sans-serif; background-color: rgb(255, 255, 255);"><span style='font-family: "Lucida Console", Monaco, monospace;'>Your order has Shipped!</span></h1>
+      <hr>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.nane}</span></p>
+      <p><br></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style='font-family: "Lucida Console", Monaco, monospace; font-size: 16px;'>Good news your order has been sent out.</span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;"><br data-mce-bogus="1"></span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;">Tracking Number : <strong>${tracking}</strong></span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;"><br data-mce-bogus="1"></span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;"><strong>Address :</strong></span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;">${orderInstance[0].name}/span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;">${orderInstance[0].shippingAddress}</span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;"><br data-mce-bogus="1"></span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style="font-family: 'Lucida Console', Monaco, monospace;">Thank you</span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;"><span style='font-family: "Lucida Console", Monaco, monospace;'>Best regards</span></span></p>
+      <p style="font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; background-color: rgb(255, 255, 255);"><span style="font-size: 16px;">E-Shopping</span></p>`, // html body
+      });
+    }
 
     return res.status(200).json({ message: "Update Order Success" });
   } catch (err) {

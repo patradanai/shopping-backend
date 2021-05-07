@@ -3,6 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "Category",
     {
       name: Sequelize.STRING,
+      imageSrc: Sequelize.STRING,
     },
     {}
   );

@@ -1,7 +1,9 @@
 const db = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const e = require("express");
+const nodemailer = require("nodemailer");
+const { digioConfig } = require("../config/email");
+const transporter = nodemailer.createTransport(digioConfig);
 const User = db.User;
 const Role = db.Role;
 const Shop = db.Shop;
@@ -108,8 +110,26 @@ exports.signUp = async (req, res) => {
     // Save Role
     await userSaved.setRoles(role);
 
+    await transporter.sendMail({
+      from: "E-shopping@digipay.dev", // sender address
+      to: userSaved.email, // list of receivers
+      subject: `Thank your for Register with E-Shopping`, // Subject line
+      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Shopping with us</em></strong></span></span></span></p>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.fname}</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">You will be Administrator for your shop.</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Username : ${userSaved.username}</span></p>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Thank you&nbsp;</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Best regards</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">E-Shipping</span></p>`, // html body
+    });
+
     return res.status(200).json({ message: "Register Complete" });
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ Error: err.message });
   }
 };
@@ -158,11 +178,21 @@ exports.signUpCustomer = async (req, res) => {
     // Save Role
     await userSaved.setRoles(role);
 
-    // Add Logs
-    await userInstance.createLog({
-      type: "INSERT",
-      eventType: "User",
-      description: `Insert user Id : ${userSaved.id} in User's Table `,
+    await transporter.sendMail({
+      from: "E-shopping@digipay.dev", // sender address
+      to: userSaved.email, // list of receivers
+      subject: `Thank your for Register with E-Shopping`, // Subject line
+      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Shopping with us</em></strong></span></span></span></p>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.fname}</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">You will be Administrator for your shop.</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Username : ${userSaved.username}</span></p>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Thank you&nbsp;</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Best regards</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">E-Shipping</span></p>`, // html body
     });
 
     return res.status(200).json({ message: "Register Complete" });
@@ -223,7 +253,7 @@ exports.signUpModerator = async (req, res) => {
     await userSaved.setRoles(role);
 
     // Add Logs
-    await userInstance.createLog({
+    await userSaved.createLog({
       type: "INSERT",
       eventType: "User",
       description: `Insert user Id : ${userSaved.id} in User's Table by ${userId}`,
