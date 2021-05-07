@@ -93,7 +93,7 @@ const uploadProduct = (req, res, next) => {
 };
 
 // POST /footage/profile
-Router.post("/footage/profile", [uploadProfile], (req, res) => {
+Router.post("/footage/profile", [isAuth, uploadProfile], (req, res) => {
   const file = req.file.filename;
   const port = 4000;
   const base = req.protocol + "://" + req.hostname + (port ? ":" + port : "");

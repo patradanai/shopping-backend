@@ -304,7 +304,7 @@ exports.profileUser = async (req, res) => {
  */
 exports.updateProfile = async (req, res) => {
   const userId = req.userId;
-  const { address, postcode, country, fname, lname, phone, email } = req.body;
+  const { fname, lname, phone, email, imageSrc } = req.body;
 
   try {
     // userInstance for get Addr Id
@@ -317,6 +317,7 @@ exports.updateProfile = async (req, res) => {
     userInstance.lname = lname;
     userInstance.phone = phone;
     userInstance.email = email;
+    userInstance.imageSrc = imageSrc;
 
     await userInstance.save();
 
