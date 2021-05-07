@@ -54,7 +54,15 @@ exports.signIn = async (req, res) => {
       );
     }
 
-    return res.status(200).json({ token: token });
+    //Get role
+    const roles = await user.getRoles();
+    let arrRole = [];
+    roles.forEach((data, index) => {
+      arrRole.push(`ROLE_${data.role?.toUpperCase()}`);
+    });
+
+    console.log(arrRole);
+    return res.status(200).json({ token: token, Role: arrRole });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
@@ -186,7 +194,7 @@ exports.signUpCustomer = async (req, res) => {
       <p><br></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.fname}</span></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
-      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">You will be Administrator for your shop.</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">You will be Customer for E-Shopping.</span></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Username : ${userSaved.username}</span></p>
       <p><br></p>
