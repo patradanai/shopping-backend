@@ -3,6 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "ShippingMethod",
     {
       name: Sequelize.STRING,
+      price: Sequelize.STRING,
     },
     {}
   );

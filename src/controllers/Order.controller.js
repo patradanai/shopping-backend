@@ -4,6 +4,7 @@ const db = require("../models");
 const User = db.User;
 const Order = db.Order;
 const OrderStatus = db.OrderStatus;
+const ShippingMethod = db.ShippingMethod;
 const StockTransactionType = db.StockTransactionType;
 const { digioConfig } = require("../config/email");
 const transporter = nodemailer.createTransport(digioConfig);
@@ -54,9 +55,27 @@ exports.getOrderByShop = async (req, res) => {
 
 exports.placeOrder = async (req, res) => {
   const userId = req.userId;
-  const { orderStatusId, paymenyId, shippingMethodId } = req.body;
+  const {
+    orderStatus,
+    paymentId,
+    shippingMethodId,
+    name,
+    phone,
+    shippingAddress,
+    subTotal,
+    grandTotal,
+  } = req.body;
 
-  if (!orderStatusId || !paymenyId & !shippingMethodId) {
+  if (
+    !orderStatus ||
+    !paymentId ||
+    !shippingMethodId ||
+    !name ||
+    !phone ||
+    !shippingAddress ||
+    !subTotal ||
+    !grandTotal
+  ) {
     return res.status(400).json({ Error: "Invalid Id" });
   }
 
@@ -68,6 +87,14 @@ exports.placeOrder = async (req, res) => {
     // Products in Cart
     // const cartProducts = await cartInstance.getProducts();
 
+    const shippingMethodInstance = await ShippingMethod.findByPk(
+      shippingMethodId
+    );
+
+    const orderStatusInstance = await OrderStatus.findOne({
+      where: { name: orderStatus },
+    });
+
     const cartProductGroup = await cartInstance.getProducts({
       attributes: [
         [Sequelize.fn("DISTINCT", Sequelize.col("ShopId")), "ShopId"],
@@ -76,11 +103,28 @@ exports.placeOrder = async (req, res) => {
     });
 
     cartProductGroup.map(async (product) => {
+      let subTotal = 0;
+      let grandTotal = 0;
+      const productCartByShop = await cartInstance.getProducts({
+        where: { ShopId: product.ShopId },
+      });
+      productCartByShop.forEach((data, index) => {
+        subTotal += data.price;
+      });
+
+      grandTotal = subTotal + parseInt(shippingMethodInstance.price);
       // Create Order
       userInstance
         .createOrder({
-          orderStatusId: orderStatusId,
-          PaymentId: paymenyId,
+          name: name,
+          phone: phone,
+          subTotal: subTotal,
+          grandTotal: grandTotal,
+          shippingAddress: shippingAddress,
+          orderStatus: orderStatus,
+          status: orderStatus,
+          OrderStatusId: orderStatusInstance.id,
+          PaymentId: paymentId,
           ShippingMethodId: shippingMethodId,
           ShopId: product.ShopId,
         })
@@ -149,7 +193,7 @@ exports.placeOrder = async (req, res) => {
               <p><span style="background-color: rgb(0, 168, 133);"><br></span></p>
               <p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Shopping with us</em></strong></span></span></span></p>
               <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
-              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">Hi ${User.name}</span></span></p>
+              <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">Hi ${userInstance.name}</span></span></p>
               <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">We&apos;ve received your order and we&apos;re already getting started on it.&nbsp;</span></span></p>
               <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 17px;">You will get an emil soon with all the details.</span></span></p>
               <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>

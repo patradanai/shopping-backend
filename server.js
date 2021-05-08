@@ -15,6 +15,7 @@ const LogRoutes = require("./src/routes/Log.routes");
 const StockRoutes = require("./src/routes/Stock.routes");
 const WishRoutes = require("./src/routes/Wish.routes");
 const ShippingRoutes = require("./src/routes/Shipping.routes");
+const PaymentRoutes = require("./src/routes/Payment.routes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -45,7 +46,9 @@ app.use("/db_stock", StockRoutes);
 
 app.use("/db_wish", WishRoutes);
 
-app.use("db_shipping", ShippingRoutes);
+app.use("/db_shipping", ShippingRoutes);
+
+app.use("/db_payment", PaymentRoutes);
 
 app.use("/images", express.static(path.join(__dirname, "images")));
 

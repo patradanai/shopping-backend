@@ -1,8 +1,8 @@
 const express = require("express");
 const Router = express.Router();
-const { getShipping } = require("../controllers/Shipping.controller");
+const { getPayment } = require("../controllers/Payment.controller");
 
 // GET /logs/:id
-Router.get("/shippings", getShipping);
+Router.get("/payments", getPayment);
 
 module.exports = Router;

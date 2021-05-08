@@ -17,7 +17,7 @@ Router.get("/statusOrder", [isAuth], getOrderStatus);
 Router.get("/orders", [isAuth], getOrder);
 
 // POST
-Router.post("/order", [isAuth, isRole("Staff", "Administrator")], placeOrder);
+Router.post("/order", [isAuth], placeOrder);
 
 // GET SHOP
 Router.get(
