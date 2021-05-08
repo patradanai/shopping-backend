@@ -12,9 +12,9 @@ const {
 Router.get("/wishs", [isAuth], getWishList);
 
 // Stock POST /db_wish/wishs
-Router.post("/wishs/:id", [isAuth], addWishList);
+Router.post("/wishs/:productId", [isAuth], addWishList);
 
 // Stock POST /db_wish/wishs
-Router.delete("/wishs/:id", [isAuth], deleteWishList);
+Router.delete("/wishs/:productId", [isAuth], deleteWishList);
 
 module.exports = Router;

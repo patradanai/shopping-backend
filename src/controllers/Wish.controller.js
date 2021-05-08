@@ -1,6 +1,7 @@
 const db = require("../models");
 const User = db.User;
 const Product = db.Product;
+
 exports.getWishList = async (req, res) => {
   const userId = req.userId;
 
@@ -9,12 +10,12 @@ exports.getWishList = async (req, res) => {
     const userInstance = await User.findByPk(userId);
 
     // getWish Instance
-    const wishInstance = await userInstance.getWish();
+    const wishInstance = await userInstance.getWishList();
 
     // getWishProducts
     const wishProducts = await wishInstance.getProducts();
 
-    return res.status(200).json(wishInstance);
+    return res.status(200).json(wishProducts);
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
@@ -29,7 +30,7 @@ exports.addWishList = async (req, res) => {
     const userInstance = await User.findByPk(userId);
 
     // getWish Instance
-    const wishInstance = await userInstance.getWish();
+    const wishInstance = await userInstance.getWishList();
 
     // GetProduct Instance by ProductId
     const productInstane = await Product.findByPk(productId);
@@ -51,7 +52,7 @@ exports.deleteWishList = async (req, res) => {
     const userInstance = await User.findByPk(userId);
 
     // getWish Instance
-    const wishInstance = await userInstance.getWish();
+    const wishInstance = await userInstance.getWishList();
 
     // GetProduct Instance by ProductId
     const productInstane = await Product.findByPk(productId);

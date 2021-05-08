@@ -9,6 +9,7 @@ const {
   updateProfile,
   updateAddress,
   memberShop,
+  isActiveUser,
 } = require("../controllers/Auth.controller");
 const { isAuth } = require("../middlewares/Auth.middleware.js");
 const { isRole } = require("../middlewares/Role.middleware");
@@ -34,6 +35,13 @@ Router.get("/user/:id/all", [isAuth, isRole("Administrator")], memberShop);
 
 // Get /profile
 Router.get("/profile", isAuth, profileUser);
+
+// PUT /profile/active/:id
+Router.put(
+  "/profile/active/:id",
+  [isAuth, isRole("Administrator")],
+  isActiveUser
+);
 
 // Put Update Profile
 Router.put("/profile/edit", isAuth, updateProfile);

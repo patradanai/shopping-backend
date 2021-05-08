@@ -197,6 +197,7 @@ exports.shopProducts = async (req, res) => {
         "imageSrc",
         "price",
         "isActive",
+        "description",
         [
           Sequelize.fn(
             "SUM",
@@ -210,7 +211,7 @@ exports.shopProducts = async (req, res) => {
       group: ["id"],
       where: { ShopId: shopId },
       include: [
-        { model: Category, required: false, attributes: ["name"] },
+        { model: Category, required: false, attributes: ["name", "id"] },
         {
           model: db.Stock,
           required: false,
@@ -251,8 +252,6 @@ exports.shopProduct = async (req, res) => {
 exports.findProducts = async (req, res) => {
   const { Op } = Sequelize;
   const { search } = req.query;
-
-
 
   try {
     const productInstance = await Product.findAll({

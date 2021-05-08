@@ -61,8 +61,7 @@ exports.signIn = async (req, res) => {
       arrRole.push(`ROLE_${data.role?.toUpperCase()}`);
     });
 
-    console.log(arrRole);
-    return res.status(200).json({ token: token, Role: arrRole });
+    return res.status(200).json({ token: token, role: arrRole });
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
@@ -122,7 +121,7 @@ exports.signUp = async (req, res) => {
       from: "E-shopping@digipay.dev", // sender address
       to: userSaved.email, // list of receivers
       subject: `Thank your for Register with E-Shopping`, // Subject line
-      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Shopping with us</em></strong></span></span></span></p>
+      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Register our E-Shopping</em></strong></span></span></span></p>
       <p><br></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.fname}</span></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
@@ -190,7 +189,7 @@ exports.signUpCustomer = async (req, res) => {
       from: "E-shopping@digipay.dev", // sender address
       to: userSaved.email, // list of receivers
       subject: `Thank your for Register with E-Shopping`, // Subject line
-      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Shopping with us</em></strong></span></span></span></p>
+      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Register our E-Shopping</em></strong></span></span></span></p>
       <p><br></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.fname}</span></p>
       <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
@@ -265,6 +264,23 @@ exports.signUpModerator = async (req, res) => {
       type: "INSERT",
       eventType: "User",
       description: `Insert user Id : ${userSaved.id} in User's Table by ${userId}`,
+    });
+
+    await transporter.sendMail({
+      from: "E-shopping@digipay.dev", // sender address
+      to: userSaved.email, // list of receivers
+      subject: `Thank your for Register with E-Shopping`, // Subject line
+      html: `<p><span style="background-color: rgb(0, 168, 133);"><span style="font-family: 'Lucida Console', Monaco, monospace;"><span style="font-size: 26px; color: rgb(251, 160, 38); background-color: rgb(204, 204, 204);"><strong><em>Thank you for Register our E-Shopping</em></strong></span></span></span></p>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Hi ${userSaved.fname}</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">You will be staff for ${ShopInstace.name}.</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;"><br></span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Username : ${userSaved.username}</span></p>
+      <p><br></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Thank you&nbsp;</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">Best regards</span></p>
+      <p><span style="font-family: 'Lucida Console', Monaco, monospace;">E-Shipping</span></p>`, // html body
     });
 
     return res.status(200).json({ message: "Register Complete" });
@@ -409,4 +425,25 @@ exports.memberShop = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ Error: err.message });
   }
+};
+
+exports.isActiveUser = async (req, res) => {
+  const userId = req.userId;
+  const { isActive } = req.body;
+  const { id } = req.params;
+
+  try {
+    // get userInstance
+    const userInstance = await User.findByPk(userId);
+
+    const shopInstane = await userInstance.getShop();
+
+    const userShop = await shopInstane.getUsers({ where: { id: id } });
+
+    userShop[0].isActive = isActive;
+
+    await userShop[0].save();
+
+    return res.status(200).json({ message: "Completed update status user" });
+  } catch (err) {}
 };
