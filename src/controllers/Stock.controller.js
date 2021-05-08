@@ -44,6 +44,13 @@ exports.updateStock = async (req, res) => {
       stockTransactionTypeInstance
     );
 
+    // Add Logs
+    await userInstance.createLog({
+      type: "UPDATE",
+      eventType: "STOCK",
+      description: `Update Product Id : ${productId} in Stock's Table`,
+    });
+
     return res.status(200).json({ message: "Completed Add Stock" });
   } catch (err) {
     return res.status(500).json({ Error: err.message });

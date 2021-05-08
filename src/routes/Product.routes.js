@@ -34,7 +34,7 @@ Router.post(
 
 // PUT /product/:id id = productId
 Router.put(
-  "/product/:id",
+  "/product/:id/edit",
   [isAuth, isRole("Administrator", "Staff")],
   updateProduct
 );

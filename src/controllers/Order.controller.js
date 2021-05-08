@@ -79,9 +79,9 @@ exports.placeOrder = async (req, res) => {
       // Create Order
       userInstance
         .createOrder({
-          // orderStatusId: orderStatusId,
-          // PaymentId: paymenyId,
-          // ShippingMethodId: shippingMethodId,
+          orderStatusId: orderStatusId,
+          PaymentId: paymenyId,
+          ShippingMethodId: shippingMethodId,
           ShopId: product.ShopId,
         })
         .then((order) => {
